@@ -6,7 +6,7 @@
   "documentation": "https://github.com/ElD4n1/home-assistant-bms-tools-integration",
   "issue_tracker": "https://github.com/ElD4n1/home-assistant-bms-tools-integration/issues",
   "requirements": [
-    
+    "bmstools==1.2.0rc1"
   ],
   "ssdp": [],
   "zeroconf": [],
