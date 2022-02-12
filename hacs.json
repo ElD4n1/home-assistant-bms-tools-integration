@@ -1,0 +1,4 @@
+{
+    "name": "BMS Tools",
+    "domains": ["sensor", "binary_sensor", "switch"]
+}

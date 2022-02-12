@@ -1,0 +1,19 @@
+{
+  "domain": "bmstools",
+  "name": "BMS Tools",
+  "version": "1.0.0-rc1",
+  "config_flow": true,
+  "documentation": "https://github.com/ElD4n1/home-assistant-bms-tools-integration",
+  "issue_tracker": "https://github.com/ElD4n1/home-assistant-bms-tools-integration/issues",
+  "requirements": [
+    
+  ],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": [
+    "@ElD4n1"
+  ],
+  "iot_class": "local_polling"
+}

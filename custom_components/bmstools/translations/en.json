@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "port_already_configured": "Port is already configured",
+            "device_already_configured": "Device is already configured",
+            "serial_numbers_exhausted": "Maximum number of serial numbers exhausted. Only numbers 1-65535 are available, 0 is reserved."
+        },
+        "error": {
+            "invalid_serial_port": "Serial port is not a valid device or could not be openned",
+            "cannot_open_serial_port": "Cannot open serial port, please check and try again",
+            "must_give_consent": "This integration can not be used without giving consent that serial number is written"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "port": "UART or USB-UART adaptor port"
+                },
+                "description": "Connect your BMS to Home Assistant. Currently only JBD BMS are supported!"
+            },
+            "serial_number": {
+                "data": {
+                    "consent": "I consent"
+                },
+                "description": "JBD BMS' come with a default serial number of 0. In order for Home Assistant to differentiate between multiple devices, a unique serial number must be assigned to the BMS. The BMS Tools integration will now generate a serial number and write it to the EEPROM of your BMS. This will not affect the operation of the BMS."
+            }
+        }
+    }
+}

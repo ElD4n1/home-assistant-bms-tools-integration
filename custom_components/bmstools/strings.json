@@ -1,0 +1,19 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "The BMS must be connected via an UART adaptor, please select serial port",
+        "data": {
+          "port": "UART or USB-UART adaptor port"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "no_serial_ports": "No com ports found.  Need a valid UART device to communicate."
+    }
+  }
+}
