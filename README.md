@@ -4,7 +4,8 @@ This integration is based on the BMS Tools project by Eric Poulsen: https://gitl
 A config flow is available that allows selecting the serial port of the connected BMS and assigning a serial number to connect multiple BMS.<br>
 Bluetooth is not supported (yet) by the underlying library.
 
-Installable via HACS as custom repository ([Guide](https://codingcyclist.medium.com/how-to-install-any-custom-component-from-github-in-less-than-5-minutes-ad84e6dc56ff)).
+# Installation
+Installable via HACS as custom repository ([guide](https://codingcyclist.medium.com/how-to-install-any-custom-component-from-github-in-less-than-5-minutes-ad84e6dc56ff)).
 
 # Currently supported BMS
 - JBD / Overkill Solar
@@ -30,19 +31,23 @@ Since this feature needs two separate sensors for charge and discharge, two addi
 - Battery charge power
 - Battery discharge power
 
-You can then add two Riemann sum integral sensors by adding this to your `configuration.yaml`:
-```
-sensor:
-  - platform: integration
-    source: sensor.charge_power
-    name: Battery Charged Energy
-    unit_prefix: k
-    round: 2
-  - platform: integration
-    source: sensor.discharge_power
-    name: Battery Discharged Energy
-    unit_prefix: k
-    round: 2
-```
+Steps:
+1.  Add two Riemann sum integral sensors by adding this to your `configuration.yaml`:
+    ```
+    sensor:
+      - platform: integration
+        source: sensor.charge_power
+        name: Battery Charged Energy
+        unit_prefix: k
+        round: 2
+      - platform: integration
+        source: sensor.discharge_power
+        name: Battery Discharged Energy
+        unit_prefix: k
+        round: 2
+    ```
+    See https://www.home-assistant.io/integrations/integration/ for more information.
+2. Restart Home Assistant
+3. Now you can add the two new sensors to the energy dashboard
 
-See https://www.home-assistant.io/integrations/integration/ for more information.
+Note that you have to charge and discharge your battery a little to have the sensors show values, otherwise they will only show `Unknown`.
