@@ -25,14 +25,13 @@ PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.SWITCH]
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO Create PyPi package from "git+https://gitlab.com/bms-tools/bms-tools.git@b267b260e77cea4e5670037b4df39ae381468312#egg=bmstools"
-# and add to manifest.json
-
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up BMS Tools from a config entry."""
-    device_info = connect_and_read_device_info(hass, entry.data)
-
+    device_info = await hass.async_add_executor_job(
+        connect_and_read_device_info, hass, entry.data
+    )
+    
     # Validation check
     if not device_matches_entry(device_info, entry):
         _LOGGER.error(

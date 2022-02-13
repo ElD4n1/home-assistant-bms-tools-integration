@@ -9,14 +9,14 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.components.bmstools.device import BMSEntity
-from homeassistant.components.bmstools.sensor import JBDBasicInfoSensor
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
+from .device import BMSEntity
+from .sensor import JBDBasicInfoSensor
 from .const import COORDINATOR_DATA_BASIC_INFO, DOMAIN, HASS_DATA_COORDINATOR
 
 _LOGGER = logging.getLogger(__name__)

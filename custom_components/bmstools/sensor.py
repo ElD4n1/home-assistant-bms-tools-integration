@@ -5,7 +5,6 @@ from collections.abc import Mapping
 import logging
 from typing import Any
 
-from homeassistant.components.bmstools.device import BMSEntity
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -25,6 +24,7 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
+from .device import BMSEntity
 from .const import (
     COORDINATOR_DATA_BASIC_INFO,
     COORDINATOR_DATA_CELL_INFO,
