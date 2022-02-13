@@ -94,6 +94,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
+    # Ensure that client is closed
+    client: JBD = hass.data[DOMAIN][entry.entry_id][HASS_DATA_CLIENT]
+    client.close()
+
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
 

@@ -4,6 +4,8 @@ This integration is based on the BMS Tools project by Eric Poulsen: https://gitl
 A config flow is available that allows selecting the serial port of the connected BMS and assigning a serial number to connect multiple BMS.<br>
 Bluetooth is not supported (yet) by the underlying library.
 
+Installable via HACS as custom repository ([Guide](https://codingcyclist.medium.com/how-to-install-any-custom-component-from-github-in-less-than-5-minutes-ad84e6dc56ff)).
+
 # Currently supported BMS
 - JBD / Overkill Solar
 
