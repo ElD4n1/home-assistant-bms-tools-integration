@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any, Mapping
 
 from bmstools.jbd.jbd import JBD, BaseReg, BMSError
@@ -77,9 +78,18 @@ def scan_comports() -> tuple[list[str] | None, str | None]:
     """Find and store available COM ports for the GUI dropdown."""
     com_ports = serial.tools.list_ports.comports(include_links=True)
     com_ports_list = []
+
     for port in com_ports:
         com_ports_list.append(port.device)
         _LOGGER.debug("COM port option: %s", port.device)
+    
+    # On Home Assistant OS there is a directory with symlinks derived from device ids,
+    # which should be used to have deterministic device selection after reboot (USB number can change!)
+    serial_id_links_dir = "/dev/serial/by-id"
+    if os.path.exists(serial_id_links_dir):
+        for device_link_name in os.listdir(serial_id_links_dir):
+            com_ports_list.append(os.path.join(serial_id_links_dir, device_link_name))
+
     if len(com_ports_list) > 0:
         return com_ports_list, com_ports_list[0]
     _LOGGER.warning("No COM ports found")
