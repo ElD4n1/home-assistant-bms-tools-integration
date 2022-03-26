@@ -185,7 +185,7 @@ class JBDCalculatedPowerSensor(BMSEntity, SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator, config_entry_data)
         self.entity_description = SensorEntityDescription(
-            key="power",
+            key="battery_power",
             device_class=SensorDeviceClass.POWER,
             native_unit_of_measurement=POWER_WATT,
             state_class=SensorStateClass.MEASUREMENT,
