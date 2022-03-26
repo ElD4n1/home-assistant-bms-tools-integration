@@ -53,6 +53,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         def sync_update_data() -> dict:
             """Fetch data from BMS synchronously."""
+            _LOGGER.debug("Updating...")
             client.open()
             basic_info = client.readBasicInfo()
             cell_info = client.readCellInfo()
