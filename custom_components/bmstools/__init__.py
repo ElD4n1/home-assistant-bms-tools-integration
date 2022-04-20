@@ -34,10 +34,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     
     # Validation check
     if not device_matches_entry(device_info, entry):
-        _LOGGER.error(
+        # TODO changed behavior from failing to warning here, because BMS seems to suddenly lose serial number after some time
+        _LOGGER.warning(
             f'Device serial number "{device_info[ATTR_SERIAL_NUMBER]}" does not match serial number "{entry.data[ATTR_SERIAL_NUMBER]}" in config entry!'
         )
-        return False
 
     # TODO how to update config entry or device info shown?
     # update_device_info_in_config_entry(device_info, entry)
