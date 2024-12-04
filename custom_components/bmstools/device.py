@@ -46,11 +46,17 @@ class BMSEntity(CoordinatorEntity):
     @property
     def device_info(self) -> DeviceInfo:
         """Return device specific attributes."""
-        return {
+        device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, self._config_entry_data[ATTR_SERIAL_NUMBER])},
             ATTR_MANUFACTURER: MANUFACTURER,
             ATTR_MODEL: self._config_entry_data[ATTR_MODEL],
             ATTR_SW_VERSION: self._config_entry_data[ATTR_SW_VERSION],
             ATTR_HW_VERSION: self._config_entry_data[ATTR_HW_VERSION],
-            ATTR_DEFAULT_NAME: DEFAULT_DEVICE_NAME,
+            ATTR_MODEL_ID: self._config_entry_data[ATTR_MODEL],
+            ATTR_NAME: f"{MANUFACTURER} {DEFAULT_DEVICE_NAME} {self._config_entry_data[ATTR_MODEL]}",
         }
+
+        if ATTR_SERIAL_NUMBER in self._config_entry_data:
+            device_info.ATTR_SERIAL_NUMBER = self._config_entry_data[ATTR_SERIAL_NUMBER]
+
+        return device_info
