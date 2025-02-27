@@ -13,11 +13,11 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
-    ELECTRIC_CURRENT_AMPERE,
-    ELECTRIC_POTENTIAL_VOLT,
+    UnitOfElectricCurrent,
+    UnitOfElectricPotential,
     PERCENTAGE,
-    POWER_WATT,
-    TEMP_CELSIUS,
+    UnitOfPower,
+    UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
@@ -66,7 +66,7 @@ async def async_setup_entry(
             data,
             key=JBDBasicInfoSensor.BATTERY_VOLTAGE,
             device_class=SensorDeviceClass.VOLTAGE,
-            native_unit_of_measurement=ELECTRIC_POTENTIAL_VOLT,
+            native_unit_of_measurement=UnitOfElectricPotential.VOLT,
             name="Voltage",
             divisor=1000,
         )
@@ -77,7 +77,7 @@ async def async_setup_entry(
             data,
             key=JBDBasicInfoSensor.BATTERY_CURRENT,
             device_class=SensorDeviceClass.CURRENT,
-            native_unit_of_measurement=ELECTRIC_CURRENT_AMPERE,
+            native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
             name="Current",
             divisor=1000,
         )
@@ -108,7 +108,7 @@ async def async_setup_entry(
                 data,
                 key=JBDBasicInfoSensor.TEMPERATURE.format(i),
                 device_class=SensorDeviceClass.TEMPERATURE,
-                native_unit_of_measurement=TEMP_CELSIUS,
+                native_unit_of_measurement=UnitOfTemperature.CELSIUS,
                 name=f"Temperature {i}",
                 entitiy_category=EntityCategory.DIAGNOSTIC,
             )
@@ -187,7 +187,7 @@ class JBDCalculatedPowerSensor(BMSEntity, SensorEntity):
         self.entity_description = SensorEntityDescription(
             key="battery_power",
             device_class=SensorDeviceClass.POWER,
-            native_unit_of_measurement=POWER_WATT,
+            native_unit_of_measurement=UnitOfPower.WATT,
             state_class=SensorStateClass.MEASUREMENT,
             name="Power",
         )
@@ -221,7 +221,7 @@ class JBDCalculatedDischargePowerSensor(BMSEntity, SensorEntity):
         self.entity_description = SensorEntityDescription(
             key="discharge_power",
             device_class=SensorDeviceClass.POWER,
-            native_unit_of_measurement=POWER_WATT,
+            native_unit_of_measurement=UnitOfPower.WATT,
             state_class=SensorStateClass.MEASUREMENT,
             entity_category=EntityCategory.DIAGNOSTIC,
             name="Discharge Power",
@@ -236,8 +236,8 @@ class JBDCalculatedDischargePowerSensor(BMSEntity, SensorEntity):
         battery_current_ma = self.coordinator.data[COORDINATOR_DATA_BASIC_INFO][
             JBDBasicInfoSensor.BATTERY_CURRENT
         ]
-        battery_power_watts = (battery_voltage_mv / 1000) * (battery_current_ma / 1000)
-        return -battery_power_watts if battery_power_watts < 0 else 0
+        battery_UnitOfPower.WATTs = (battery_voltage_mv / 1000) * (battery_current_ma / 1000)
+        return -battery_UnitOfPower.WATTs if battery_UnitOfPower.WATTs < 0 else 0
 
 
 class JBDCalculatedChargePowerSensor(BMSEntity, SensorEntity):
@@ -257,7 +257,7 @@ class JBDCalculatedChargePowerSensor(BMSEntity, SensorEntity):
         self.entity_description = SensorEntityDescription(
             key="charge_power",
             device_class=SensorDeviceClass.POWER,
-            native_unit_of_measurement=POWER_WATT,
+            native_unit_of_measurement=UnitOfPower.WATT,
             state_class=SensorStateClass.MEASUREMENT,
             entity_category=EntityCategory.DIAGNOSTIC,
             name="Charge Power",
@@ -272,8 +272,8 @@ class JBDCalculatedChargePowerSensor(BMSEntity, SensorEntity):
         battery_current_ma = self.coordinator.data[COORDINATOR_DATA_BASIC_INFO][
             JBDBasicInfoSensor.BATTERY_CURRENT
         ]
-        battery_power_watts = (battery_voltage_mv / 1000) * (battery_current_ma / 1000)
-        return battery_power_watts if battery_power_watts > 0 else 0
+        battery_UnitOfPower.WATTs = (battery_voltage_mv / 1000) * (battery_current_ma / 1000)
+        return battery_UnitOfPower.WATTs if battery_UnitOfPower.WATTs > 0 else 0
 
 
 class JBDCellVoltageSensor(BMSEntity, SensorEntity):
@@ -292,7 +292,7 @@ class JBDCellVoltageSensor(BMSEntity, SensorEntity):
         self.entity_description = SensorEntityDescription(
             key=JBDCellVoltageSensor.CELL_VOLTAGE.format(cell_number),
             device_class=SensorDeviceClass.VOLTAGE,
-            native_unit_of_measurement=ELECTRIC_POTENTIAL_VOLT,
+            native_unit_of_measurement=UnitOfElectricPotential.VOLT,
             state_class=SensorStateClass.MEASUREMENT,
             entity_category=EntityCategory.DIAGNOSTIC,
             name=f"Cell {cell_number} voltage",

@@ -1,4 +1,5 @@
 {
     "name": "BMS Tools",
+    "content_in_root": true,
     "domains": ["sensor", "binary_sensor", "switch"]
 }
