@@ -236,8 +236,8 @@ class JBDCalculatedDischargePowerSensor(BMSEntity, SensorEntity):
         battery_current_ma = self.coordinator.data[COORDINATOR_DATA_BASIC_INFO][
             JBDBasicInfoSensor.BATTERY_CURRENT
         ]
-        battery_UnitOfPower.WATTs = (battery_voltage_mv / 1000) * (battery_current_ma / 1000)
-        return -battery_UnitOfPower.WATTs if battery_UnitOfPower.WATTs < 0 else 0
+        battery_power_watts  = (battery_voltage_mv / 1000) * (battery_current_ma / 1000)
+        return -battery_power_watts  if battery_power_watts  < 0 else 0
 
 
 class JBDCalculatedChargePowerSensor(BMSEntity, SensorEntity):
@@ -272,8 +272,8 @@ class JBDCalculatedChargePowerSensor(BMSEntity, SensorEntity):
         battery_current_ma = self.coordinator.data[COORDINATOR_DATA_BASIC_INFO][
             JBDBasicInfoSensor.BATTERY_CURRENT
         ]
-        battery_UnitOfPower.WATTs = (battery_voltage_mv / 1000) * (battery_current_ma / 1000)
-        return battery_UnitOfPower.WATTs if battery_UnitOfPower.WATTs > 0 else 0
+        battery_power_watts = (battery_voltage_mv / 1000) * (battery_current_ma / 1000)
+        return battery_power_watts if battery_power_watts > 0 else 0
 
 
 class JBDCellVoltageSensor(BMSEntity, SensorEntity):
