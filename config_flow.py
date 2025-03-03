@@ -101,7 +101,7 @@ def scan_comports() -> tuple[list[str] | None, str | None, bool]:
     if len(com_ports_list) > 0:
         return com_ports_list, com_ports_list[0], False
     _LOGGER.warning("No COM ports found")
-    return None, None, True
+    return [], None, True
 
 
 class BMSToolsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

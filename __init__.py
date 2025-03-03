@@ -44,6 +44,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Initialize client instance
     com_port = entry.data[CONF_PORT]
+    if com_port == "dummy_port":
+        hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
+            HASS_DATA_COORDINATOR: None,
+            HASS_DATA_CLIENT: None,
+        }
+        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        return True
+
     serial_client = Serial()
     serial_client.port = com_port
     client = JBD(serial_client, timeout=1, debug=False)
