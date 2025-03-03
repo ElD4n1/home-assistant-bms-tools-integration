@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[requires]
+python_version = "3.13"
+
+[packages]
+bmstools = "==1.2.0rc1"
+pytest = "*"
+homeassistant = "*"
+pytest-cov = "*"
+pytest-homeassistant-custom-component = "*"
+pytest-asyncio = "*"
+pytest-mock = "*"
+pytest-regressions = "*"
+testfixtures = "*"
+
+[dev-packages]
