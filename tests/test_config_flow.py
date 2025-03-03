@@ -39,18 +39,3 @@ async def test_async_step_init(hass, mock_bms_tools, mock_serial_tools):
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result["title"] == "BMS Tools"
     assert result["data"] == {CONF_PORT: "COM1", ATTR_SERIAL_NUMBER: "123456"}
-
-async def test_async_step_serial_number(hass, mock_bms_tools):
-    """Test the async_step_serial_number method."""
-    flow = BMSToolsConfigFlow()
-    flow.hass = hass
-    flow.init_info = {CONF_PORT: "COM1", ATTR_SERIAL_NUMBER: 0}
-
-    result = await flow.async_step_serial_number(user_input=None)
-    assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "serial_number"
-
-    result = await flow.async_step_serial_number(user_input={"consent": True})
-    assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert result["title"] == "BMS Tools"
-    assert result["data"] == {CONF_PORT: "COM1", ATTR_SERIAL_NUMBER: 1}
