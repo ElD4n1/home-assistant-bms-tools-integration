@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import patch
 
-from homeassistant import data_entry_flow
 from homeassistant.const import CONF_PORT
 from homeassistant.data_entry_flow import FlowResultType
 
