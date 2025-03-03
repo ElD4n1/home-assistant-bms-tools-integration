@@ -1,11 +1,17 @@
-import pytest
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import async_get_registry
-from homeassistant.helpers.entity_registry import async_get_registry
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from datetime import timedelta
 
-from custom_components.bmstools.device import BMSEntity
-from custom_components.bmstools.const import DOMAIN, ATTR_SERIAL_NUMBER, ATTR_MODEL, ATTR_SW_VERSION, ATTR_HW_VERSION
+import pytest
+from homeassistant.core import HomeAssistant, _LOGGER
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.const import (ATTR_SERIAL_NUMBER, ATTR_MODEL, ATTR_SW_VERSION, ATTR_HW_VERSION, ATTR_IDENTIFIERS,
+                                 ATTR_MANUFACTURER, ATTR_DEFAULT_NAME)
+
+from home_assistant_bms_tools_integration.device import BMSEntity
+from home_assistant_bms_tools_integration.const import DOMAIN
+
+async def async_update_method():
+    """Mock update method."""
+    return {}
 
 @pytest.fixture
 async def device_info_fixture(hass: HomeAssistant):
@@ -20,7 +26,7 @@ async def device_info_fixture(hass: HomeAssistant):
         hass,
         _LOGGER,
         name="BMS Tools",
-        update_method=lambda: {},
+        update_method=async_update_method,
         update_interval=timedelta(seconds=3),
     )
     await coordinator.async_config_entry_first_refresh()
