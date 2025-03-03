@@ -1,20 +1,20 @@
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-from homeassistant import config_entries, data_entry_flow
+from homeassistant import data_entry_flow
 from homeassistant.const import CONF_PORT
 
-from custom_components.bmstools.config_flow import BMSToolsConfigFlow, connect_and_read_device_info
-from custom_components.bmstools.const import DOMAIN, ATTR_SERIAL_NUMBER
+from home_assistant_bms_tools_integration.config_flow import BMSToolsConfigFlow
+from home_assistant_bms_tools_integration.const import ATTR_SERIAL_NUMBER
 
 @pytest.fixture
 def mock_bms_tools():
-    with patch("custom_components.bmstools.config_flow.connect_and_read_device_info", return_value={"serial_number": "123456"}):
+    with patch("home_assistant_bms_tools_integration.config_flow.connect_and_read_device_info", return_value={"serial_number": "123456"}):
         yield
 
 @pytest.fixture
 def mock_serial_tools():
-    with patch("custom_components.bmstools.config_flow.scan_comports", return_value=(["COM1", "COM2"], "COM1")):
+    with patch("home_assistant_bms_tools_integration.config_flow.scan_comports", return_value=(["COM1", "COM2"], "COM1")):
         yield
 
 async def test_async_step_user(hass, mock_bms_tools, mock_serial_tools):
