@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from homeassistant import data_entry_flow
 from homeassistant.const import CONF_PORT
+from homeassistant.data_entry_flow import FlowResultType
 
 from home_assistant_bms_tools_integration.config_flow import BMSToolsConfigFlow
 from home_assistant_bms_tools_integration.const import ATTR_SERIAL_NUMBER
@@ -23,7 +24,7 @@ async def test_async_step_user(hass, mock_bms_tools, mock_serial_tools):
     flow.hass = hass
 
     result = await flow.async_step_user(user_input=None)
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "init"
 
 async def test_async_step_init(hass, mock_bms_tools, mock_serial_tools):
@@ -32,11 +33,11 @@ async def test_async_step_init(hass, mock_bms_tools, mock_serial_tools):
     flow.hass = hass
 
     result = await flow.async_step_init(user_input=None)
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "init"
 
     result = await flow.async_step_init(user_input={CONF_PORT: "COM1"})
-    assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result["title"] == "BMS Tools"
     assert result["data"] == {CONF_PORT: "COM1", ATTR_SERIAL_NUMBER: "123456"}
 
@@ -47,10 +48,10 @@ async def test_async_step_serial_number(hass, mock_bms_tools):
     flow.init_info = {CONF_PORT: "COM1", ATTR_SERIAL_NUMBER: 0}
 
     result = await flow.async_step_serial_number(user_input=None)
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "serial_number"
 
     result = await flow.async_step_serial_number(user_input={"consent": True})
-    assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result["title"] == "BMS Tools"
     assert result["data"] == {CONF_PORT: "COM1", ATTR_SERIAL_NUMBER: 1}

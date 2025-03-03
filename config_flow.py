@@ -114,7 +114,7 @@ class BMSToolsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.debug(f"Step user: {user_input}")
         return await self.async_step_init()
 
-    async def async_step_init(self, user_input: dict[str, Any] | None = None):
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the first step, which is selecting the serial port."""
         _LOGGER.debug(f"Step init: {user_input}")
 
