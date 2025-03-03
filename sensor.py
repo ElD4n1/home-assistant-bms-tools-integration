@@ -17,7 +17,7 @@ from homeassistant.const import (
     UnitOfElectricPotential,
     PERCENTAGE,
     UnitOfPower,
-    UnitOfTemperature,
+    UnitOfTemperature, CONF_PORT,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
@@ -50,7 +50,7 @@ async def async_setup_entry(
     ]
     data = config_entry.data
 
-    if data.get("dummy", False):
+    if data.get(CONF_PORT, False) is "dummy_port":
         entities.append(DummySensor("Dummy SoC", PERCENTAGE, 50))
         entities.append(DummySensor("Dummy Voltage", UnitOfElectricPotential.VOLT, 12.6))
         entities.append(DummySensor("Dummy Current", UnitOfElectricCurrent.AMPERE, 0))

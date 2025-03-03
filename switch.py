@@ -7,6 +7,7 @@ from typing import Any, Mapping
 from bmstools.jbd.jbd import JBD
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import ToggleEntity, ToggleEntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -39,7 +40,7 @@ async def async_setup_entry(
         HASS_DATA_COORDINATOR
     ]
 
-    if config_entry.data.get("dummy", False):
+    if config_entry.data.get(CONF_PORT, False) is "dummy_port":
         entities.append(DummySwitch("Dummy Charging", False))
         entities.append(DummySwitch("Dummy Discharging", False))
     else:

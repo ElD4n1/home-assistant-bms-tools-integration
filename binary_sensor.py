@@ -10,6 +10,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -34,7 +35,7 @@ async def async_setup_entry(
         HASS_DATA_COORDINATOR
     ]
 
-    if config_entry.data.get("dummy", False):
+    if config_entry.data.get(CONF_PORT, False) is "dummy_port":
         entities.append(DummyBinarySensor("Dummy Cell 0 Balancing", False))
     else:
         for i in range(

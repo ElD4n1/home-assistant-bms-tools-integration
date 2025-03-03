@@ -28,6 +28,15 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up BMS Tools from a config entry."""
+    com_port = entry.data[CONF_PORT]
+    if com_port == "dummy_port":
+        hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
+            HASS_DATA_COORDINATOR: None,
+            HASS_DATA_CLIENT: None,
+        }
+        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        return True
+
     device_info = await hass.async_add_executor_job(
         connect_and_read_device_info, hass, entry.data
     )
@@ -43,15 +52,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # update_device_info_in_config_entry(device_info, entry)
 
     # Initialize client instance
-    com_port = entry.data[CONF_PORT]
-    if com_port == "dummy_port":
-        hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-            HASS_DATA_COORDINATOR: None,
-            HASS_DATA_CLIENT: None,
-        }
-        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-        return True
-
     serial_client = Serial()
     serial_client.port = com_port
     client = JBD(serial_client, timeout=1, debug=False)
