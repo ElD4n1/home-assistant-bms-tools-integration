@@ -74,7 +74,7 @@ def connect_and_read_device_info(
     return device_info
 
 
-def scan_comports() -> tuple[list[str] | None, str | None]:
+def scan_comports() -> tuple[list[str] | None, str | None, bool]:
     """Find and store available COM ports for the GUI dropdown."""
     com_ports = serial.tools.list_ports.comports(include_links=True)
     com_ports_list = []
@@ -91,9 +91,9 @@ def scan_comports() -> tuple[list[str] | None, str | None]:
             com_ports_list.append(os.path.join(serial_id_links_dir, device_link_name))
 
     if len(com_ports_list) > 0:
-        return com_ports_list, com_ports_list[0]
+        return com_ports_list, com_ports_list[0], False
     _LOGGER.warning("No COM ports found")
-    return None, None
+    return None, None, True
 
 
 class BMSToolsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -106,6 +106,7 @@ class BMSToolsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.init_info = None
         self._com_ports_list = None
         self._default_com_port = None
+        self._no_com_ports = False
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -121,9 +122,16 @@ class BMSToolsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if self._com_ports_list is None:
             result = await self.hass.async_add_executor_job(scan_comports)
-            self._com_ports_list, self._default_com_port = result
-            if self._default_com_port is None:
-                return self.async_abort(reason="no_serial_ports")
+            self._com_ports_list, self._default_com_port, self._no_com_ports = result
+            if self._no_com_ports:
+                self.init_info = {
+                    ATTR_SERIAL_NUMBER: "dummy_serial_number",
+                    ATTR_MODEL: "Dummy Model",
+                    ATTR_SW_VERSION: "1.0.0",
+                    ATTR_HW_VERSION: "1.0.0",
+                    CONF_PORT: "dummy_port",
+                }
+                return await self.async_step_serial_number()
 
         # Handle the initial step.
         if user_input is not None:
