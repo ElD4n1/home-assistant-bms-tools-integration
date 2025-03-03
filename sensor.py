@@ -50,73 +50,82 @@ async def async_setup_entry(
     ]
     data = config_entry.data
 
-    entities.append(
-        JBDBasicInfoSensor(
-            coordinator,
-            data,
-            key=JBDBasicInfoSensor.BATTERY_SOC_PERCENT,
-            device_class=SensorDeviceClass.BATTERY,
-            native_unit_of_measurement=PERCENTAGE,
-            name="SoC",
-        )
-    )
-    entities.append(
-        JBDBasicInfoSensor(
-            coordinator,
-            data,
-            key=JBDBasicInfoSensor.BATTERY_VOLTAGE,
-            device_class=SensorDeviceClass.VOLTAGE,
-            native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-            name="Voltage",
-            divisor=1000,
-        )
-    )
-    entities.append(
-        JBDBasicInfoSensor(
-            coordinator,
-            data,
-            key=JBDBasicInfoSensor.BATTERY_CURRENT,
-            device_class=SensorDeviceClass.CURRENT,
-            native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
-            name="Current",
-            divisor=1000,
-        )
-    )
-    entities.append(JBDCalculatedPowerSensor(coordinator, data))
-    entities.append(JBDCalculatedDischargePowerSensor(coordinator, data))
-    entities.append(JBDCalculatedChargePowerSensor(coordinator, data))
-    entities.append(
-        JBDBasicInfoSensor(
-            coordinator,
-            data,
-            key=JBDBasicInfoSensor.CYCLE_COUNT,
-            device_class=None,
-            native_unit_of_measurement=None,
-            name="Cycle count",
-            entitiy_category=EntityCategory.DIAGNOSTIC,
-        )
-    )
-    for i in range(
-        0,
-        coordinator.data[COORDINATOR_DATA_BASIC_INFO][
-            JBDBasicInfoSensor.TEMP_SENSOR_COUNT
-        ],
-    ):
+    if data.get("dummy", False):
+        entities.append(DummySensor("Dummy SoC", PERCENTAGE, 50))
+        entities.append(DummySensor("Dummy Voltage", UnitOfElectricPotential.VOLT, 12.6))
+        entities.append(DummySensor("Dummy Current", UnitOfElectricCurrent.AMPERE, 0))
+        entities.append(DummySensor("Dummy Power", UnitOfPower.WATT, 0))
+        entities.append(DummySensor("Dummy Cycle Count", None, 0))
+        entities.append(DummySensor("Dummy Temperature 0", UnitOfTemperature.CELSIUS, 25))
+        entities.append(DummySensor("Dummy Cell 0 Voltage", UnitOfElectricPotential.VOLT, 3.3))
+    else:
         entities.append(
             JBDBasicInfoSensor(
                 coordinator,
                 data,
-                key=JBDBasicInfoSensor.TEMPERATURE.format(i),
-                device_class=SensorDeviceClass.TEMPERATURE,
-                native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-                name=f"Temperature {i}",
+                key=JBDBasicInfoSensor.BATTERY_SOC_PERCENT,
+                device_class=SensorDeviceClass.BATTERY,
+                native_unit_of_measurement=PERCENTAGE,
+                name="SoC",
+            )
+        )
+        entities.append(
+            JBDBasicInfoSensor(
+                coordinator,
+                data,
+                key=JBDBasicInfoSensor.BATTERY_VOLTAGE,
+                device_class=SensorDeviceClass.VOLTAGE,
+                native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+                name="Voltage",
+                divisor=1000,
+            )
+        )
+        entities.append(
+            JBDBasicInfoSensor(
+                coordinator,
+                data,
+                key=JBDBasicInfoSensor.BATTERY_CURRENT,
+                device_class=SensorDeviceClass.CURRENT,
+                native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+                name="Current",
+                divisor=1000,
+            )
+        )
+        entities.append(JBDCalculatedPowerSensor(coordinator, data))
+        entities.append(JBDCalculatedDischargePowerSensor(coordinator, data))
+        entities.append(JBDCalculatedChargePowerSensor(coordinator, data))
+        entities.append(
+            JBDBasicInfoSensor(
+                coordinator,
+                data,
+                key=JBDBasicInfoSensor.CYCLE_COUNT,
+                device_class=None,
+                native_unit_of_measurement=None,
+                name="Cycle count",
                 entitiy_category=EntityCategory.DIAGNOSTIC,
             )
         )
-    for i in range(
-        0, coordinator.data[COORDINATOR_DATA_BASIC_INFO][JBDBasicInfoSensor.CELL_COUNT]
-    ):
-        entities.append(JBDCellVoltageSensor(coordinator, data, i))
+        for i in range(
+            0,
+            coordinator.data[COORDINATOR_DATA_BASIC_INFO][
+                JBDBasicInfoSensor.TEMP_SENSOR_COUNT
+            ],
+        ):
+            entities.append(
+                JBDBasicInfoSensor(
+                    coordinator,
+                    data,
+                    key=JBDBasicInfoSensor.TEMPERATURE.format(i),
+                    device_class=SensorDeviceClass.TEMPERATURE,
+                    native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+                    name=f"Temperature {i}",
+                    entitiy_category=EntityCategory.DIAGNOSTIC,
+                )
+            )
+        for i in range(
+            0, coordinator.data[COORDINATOR_DATA_BASIC_INFO][JBDBasicInfoSensor.CELL_COUNT]
+        ):
+            entities.append(JBDCellVoltageSensor(coordinator, data, i))
 
     _LOGGER.debug("async_setup_entry adding %d entities", len(entities))
     async_add_entities(entities, True)
@@ -305,3 +314,18 @@ class JBDCellVoltageSensor(BMSEntity, SensorEntity):
             self.entity_description.key
         ]
         return round(cell_mv / 1000, 3)
+
+
+class DummySensor(SensorEntity):
+    """Representation of a dummy sensor that returns a fixed value."""
+
+    def __init__(self, name: str, unit_of_measurement: str | None, value: Any) -> None:
+        """Initialize the dummy sensor."""
+        self._attr_name = name
+        self._attr_native_unit_of_measurement = unit_of_measurement
+        self._attr_native_value = value
+
+    @property
+    def native_value(self):
+        """Return the fixed value."""
+        return self._attr_native_value

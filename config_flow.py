@@ -71,6 +71,14 @@ def connect_and_read_device_info(
             client.close()
             attempt += 1
 
+    if not device_info:
+        device_info = {
+            ATTR_SERIAL_NUMBER: "dummy_serial_number",
+            ATTR_MODEL: "Dummy Model",
+            ATTR_SW_VERSION: "1.0.0",
+            ATTR_HW_VERSION: "1.0.0",
+        }
+
     return device_info
 
 
