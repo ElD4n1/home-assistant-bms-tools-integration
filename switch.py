@@ -7,6 +7,7 @@ from typing import Any, Mapping
 from bmstools.jbd.jbd import JBD
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import ToggleEntity, ToggleEntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -38,10 +39,14 @@ async def async_setup_entry(
     coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
         HASS_DATA_COORDINATOR
     ]
-    client: JBD = hass.data[DOMAIN][config_entry.entry_id][HASS_DATA_CLIENT]
 
-    entities.append(JBDChargeToggle(coordinator, client, config_entry.data))
-    entities.append(JBDDischargeToggle(coordinator, client, config_entry.data))
+    if config_entry.data.get(CONF_PORT, False) is "dummy_port":
+        entities.append(DummySwitch("Dummy Charging", False))
+        entities.append(DummySwitch("Dummy Discharging", False))
+    else:
+        client: JBD = hass.data[DOMAIN][config_entry.entry_id][HASS_DATA_CLIENT]
+        entities.append(JBDChargeToggle(coordinator, client, config_entry.data))
+        entities.append(JBDDischargeToggle(coordinator, client, config_entry.data))
 
     _LOGGER.debug("async_setup_entry adding %d entities", len(entities))
     async_add_entities(entities, True)
@@ -183,3 +188,25 @@ class JBDDischargeToggle(BMSEntity, ToggleEntity):
 
         _LOGGER.debug("Discharge disabled!")
         await self.coordinator.async_refresh()
+
+
+class DummySwitch(ToggleEntity):
+    """Representation of a dummy switch that returns a fixed value."""
+
+    def __init__(self, name: str, value: bool) -> None:
+        """Initialize the dummy switch."""
+        self._attr_name = name
+        self._attr_is_on = value
+
+    @property
+    def is_on(self):
+        """Return the fixed value."""
+        return self._attr_is_on
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        """Turn the dummy switch on."""
+        self._attr_is_on = True
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        """Turn the dummy switch off."""
+        self._attr_is_on = False

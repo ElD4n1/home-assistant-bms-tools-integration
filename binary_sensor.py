@@ -10,6 +10,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -34,19 +35,22 @@ async def async_setup_entry(
         HASS_DATA_COORDINATOR
     ]
 
-    for i in range(
-        0, coordinator.data[COORDINATOR_DATA_BASIC_INFO][JBDBasicInfoSensor.CELL_COUNT]
-    ):
-        entities.append(
-            JBDBasicInfoBinarySensor(
-                coordinator,
-                config_entry.data,
-                key=JBDBasicInfoBinarySensor.CELL_BALANCING.format(i),
-                device_class=BinarySensorDeviceClass.RUNNING,
-                name=f"Cell {i} balancing",
-                entitiy_category=EntityCategory.DIAGNOSTIC,
+    if config_entry.data.get(CONF_PORT, False) is "dummy_port":
+        entities.append(DummyBinarySensor("Dummy Cell 0 Balancing", False))
+    else:
+        for i in range(
+            0, coordinator.data[COORDINATOR_DATA_BASIC_INFO][JBDBasicInfoSensor.CELL_COUNT]
+        ):
+            entities.append(
+                JBDBasicInfoBinarySensor(
+                    coordinator,
+                    config_entry.data,
+                    key=JBDBasicInfoBinarySensor.CELL_BALANCING.format(i),
+                    device_class=BinarySensorDeviceClass.RUNNING,
+                    name=f"Cell {i} balancing",
+                    entitiy_category=EntityCategory.DIAGNOSTIC,
+                )
             )
-        )
 
     _LOGGER.debug("async_setup_entry adding %d entities", len(entities))
     async_add_entities(entities, True)
@@ -81,3 +85,17 @@ class JBDBasicInfoBinarySensor(BMSEntity, BinarySensorEntity):
         return self.coordinator.data[COORDINATOR_DATA_BASIC_INFO][
             self.entity_description.key
         ]
+
+
+class DummyBinarySensor(BinarySensorEntity):
+    """Representation of a dummy binary sensor that returns a fixed value."""
+
+    def __init__(self, name: str, value: bool) -> None:
+        """Initialize the dummy binary sensor."""
+        self._attr_name = name
+        self._attr_is_on = value
+
+    @property
+    def is_on(self):
+        """Return the fixed value."""
+        return self._attr_is_on
